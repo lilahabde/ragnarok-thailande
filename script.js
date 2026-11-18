@@ -115,7 +115,6 @@ function applyLang(l){
   if(document.getElementById('world').classList.contains('ready')) setWorldImages(l);
   refreshLabels();
   document.querySelectorAll('#classDots button').forEach((b,i)=>b.setAttribute('aria-label', T[l].slide+' '+(i+1)));
-  document.querySelectorAll('#thumbs button').forEach((b,i)=>b.setAttribute('aria-label', T[l].shotAlt+' '+(i+1)));
   const dimg = document.querySelector('.druid-frame img'); if(dimg) dimg.alt = T[l].c_dru;
   document.querySelectorAll('#shots img').forEach((im,i)=>{ im.alt = T[l].shotAlt+' '+(i+1); });
   const md = document.querySelector('meta[name=description]'); if(md) md.content = T[l].metaDesc;
@@ -202,10 +201,11 @@ function autoplay(el, next, ms){
   const shots = document.getElementById('shots');
   const imgs = [...shots.children];
   const thumbs = document.getElementById('thumbs');
-  imgs.forEach((im,i)=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label', T[lang].shotAlt+' '+(i+1)); b.innerHTML='<img decoding="async" alt="" width="320" height="180" data-src="'+im.dataset.src.replace('shot-','thumb-')+'">'; b.addEventListener('click',()=>goTo(i)); thumbs.appendChild(b); });
-  const tb = [...thumbs.children];
+  const strip = document.createElement('div'); strip.className = 'strip-track'; strip.setAttribute('aria-hidden','true');
+  for(let k=0;k<2;k++) imgs.forEach(im=>{ const p=document.createElement('img'); p.decoding='async'; p.alt=''; p.width=320; p.height=180; p.dataset.src=im.dataset.src.replace('shot-','thumb-'); strip.appendChild(p); });
+  thumbs.appendChild(strip);
   function idx(){ return Math.round(shots.scrollLeft / shots.clientWidth); }
-  function mark(){ const i=idx(); tb.forEach((b,k)=>b.setAttribute('aria-current',String(k===i))); const t=tb[i]; if(t) thumbs.scrollTo({left:t.offsetLeft-thumbs.clientWidth/2+t.clientWidth/2,behavior:'smooth'}); }
+  function mark(){}
   function goTo(i){ const cur=idx(); i=(i+imgs.length)%imgs.length; shots.scrollTo({left:i*shots.clientWidth,behavior:Math.abs(i-cur)>1?'auto':'smooth'}); }
   document.querySelectorAll('#stage .arrow').forEach(a=>a.addEventListener('click',()=>goTo(idx()+Number(a.dataset.dir))));
   let t; shots.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(mark,80); },{passive:true});
