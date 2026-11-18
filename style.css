@@ -389,3 +389,12 @@ details p{text-align:center}
 .wide::after{background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%)}
 .wide:hover .cap{translate:0 -6px}
 .trust,.arrows,.dots,.flinks{justify-content:center}
+
+/* ---- keyart column: image + closing line, balanced against the text column ---- */
+.memory-right{display:grid;gap:18px;align-content:center}
+.memory-right .bridge{margin:0;padding:16px 20px;border-radius:16px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);text-align:center;font-size:clamp(1.1rem,2.2vw,1.4rem)}
+@media (min-width:821px){
+  .memory-grid{grid-template-columns:.8fr 1.2fr;align-items:center}
+  .memories{grid-template-columns:1fr 1fr;gap:12px;margin-top:1.3rem}
+  .memories li{flex-direction:column;justify-content:center;gap:2px;padding:14px 12px;min-height:84px;line-height:1.25}
+}
