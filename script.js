@@ -10,7 +10,7 @@ const ICON_PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" fill="current
 const T = {
  en:{
   cta:'PLAY FREE ON STEAM', ctaNote:'Free to play with optional in-app purchases. For Windows PC on Steam.',
-  heroEye:'The first open-world RO', h1:'Midgard Is Calling You Back.',
+  h1:'Midgard Is Calling You Back.',
   heroSub:'The world you remember, rebuilt as a vast open world. Choose the class you loved, meet the new Druid and begin a new adventure today.',
   s1:'FREE',s1d:'to play', s2:'OPEN',s2d:'world adventure', s3:'8',s3d:'classes at launch', s4:'PC + MOBILE',s4d:'progress in sync',
   clsEye:'Choose your path', clsTitle:'Remember Your First Adventure?',
@@ -56,7 +56,7 @@ const T = {
  },
  th:{
   cta:'เล่นฟรีบน STEAM', ctaNote:'เล่นฟรี มีไอเทมในเกมให้เลือกซื้อแบบไม่บังคับ สำหรับ Windows PC บน Steam',
-  heroEye:'RO โอเพ่นเวิลด์เกมแรก', h1:'มิดการ์ดเรียกหาคุณกลับมา',
+  h1:'มิดการ์ดเรียกหาคุณกลับมา',
   heroSub:'โลกที่คุณจดจำ ถูกสร้างใหม่เป็นโอเพ่นเวิลด์สุดกว้าง เลือกอาชีพที่คุณรัก พบกับดรูอิดคนใหม่ แล้วเริ่มการผจญภัยครั้งใหม่ได้วันนี้',
   s1:'ฟรี',s1d:'เล่นได้เลย', s2:'โอเพ่นเวิลด์',s2d:'ผจญภัยอิสระ', s3:'8',s3d:'อาชีพตั้งแต่เปิดเกม', s4:'PC + มือถือ',s4d:'ความคืบหน้าซิงก์กัน',
   clsEye:'เลือกเส้นทางของคุณ', clsTitle:'จำการผจญภัยครั้งแรกของคุณได้ไหม?',
