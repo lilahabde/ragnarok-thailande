@@ -4,8 +4,6 @@ const CONFIG = {
   navDelayMs: 300                                   // max wait for tracker before navigating
 };
 
-const ICON_PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
-const ICON_PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
 /* ============ I18N ============ */
 const T = {
  en:{
@@ -153,38 +151,32 @@ window.addEventListener('pageshow',()=>{ navigating = false; });
 /* ============ HERO VIDEO ============
    Muted loop built from the official artwork (poster = still image).
    - not loaded at all when the visitor asked to save data
-   - not started when the visitor prefers reduced motion (press play to start it)
+   - always plays by itself (no pause button)
    - paused automatically when scrolled out of view or when the tab is hidden */
 (function(){
-  const v = document.getElementById('heroVideo'), btn = document.getElementById('heroToggle'); if(!v) return;
+  const v = document.getElementById('heroVideo'); if(!v) return;
   const saveData = navigator.connection && navigator.connection.saveData;
-  if(saveData){ v.remove(); if(btn) btn.hidden = true; return; }
-  let userPaused = matchMedia('(prefers-reduced-motion:reduce)').matches, visible = true;
+  if(saveData){ v.remove(); return; }
+  let visible = true;
   v.muted = true;
   const portrait = matchMedia('(max-width:820px) and (orientation:portrait)').matches;
   v.poster = innerWidth <= 820 ? 'hero-bg-m.webp' : 'hero-bg.webp';
   const load = ()=>{ if(!v.getAttribute('src')) v.src = portrait ? 'hero-m.mp4' : 'hero.mp4'; };
-  const sync = ()=>{ if(!userPaused && visible && !document.hidden){ load(); const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else { v.pause(); } };
-  const setBtn = ()=>{ if(!btn) return; btn.setAttribute('aria-pressed', String(userPaused)); btn.dataset.i18nLabel = userPaused ? 'playVideo' : 'pauseVideo'; btn.firstElementChild.innerHTML = userPaused ? ICON_PLAY : ICON_PAUSE; refreshLabels(); };
-  if(btn) btn.addEventListener('click', ()=>{ userPaused = !userPaused; setBtn(); sync(); });
+  const sync = ()=>{ if(visible && !document.hidden){ load(); const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else { v.pause(); } };
   document.addEventListener('visibilitychange', sync);
   new IntersectionObserver(es=>es.forEach(e=>{ visible = e.isIntersecting; sync(); }),{threshold:.05}).observe(document.getElementById('hero'));
-  setBtn(); sync();
+  sync();
 })();
 
 /* ============ AUTOPLAY HELPER ============
-   Carousels move by themselves while on screen, loop forever, and have a visible pause button (WCAG 2.2.2).
-   Hovering does not stop them; a click/touch/keypress/focus only delays the next move by 2.5 s.
-   With "reduce motion" they start paused and the button starts them. */
-function autoplay(el, btn, next, ms){
-  let last = 0, vis = false, paused = matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const setBtn = ()=>{ if(!btn) return; btn.setAttribute('aria-pressed', String(paused)); btn.dataset.i18nLabel = paused ? 'playSlides' : 'pauseSlides'; btn.firstElementChild.innerHTML = paused ? ICON_PLAY : ICON_PAUSE; refreshLabels(); };
-  if(btn) btn.addEventListener('click', ()=>{ paused = !paused; setBtn(); });
-  setBtn();
+   Carousels move by themselves while on screen, loop forever.
+   Hovering does not stop them; a click/touch/keypress/focus only delays the next move by 2.5 s. */
+function autoplay(el, next, ms){
+  let last = 0, vis = false;
   const touch = ()=>{ last = Date.now(); };
   ['pointerdown','touchstart','wheel','keydown','focusin'].forEach(e=>el.addEventListener(e,touch,{passive:true}));
   new IntersectionObserver(es=>es.forEach(e=>{ vis = e.isIntersecting; }),{threshold:.1}).observe(el);
-  setInterval(()=>{ if(!paused && vis && !document.hidden && Date.now()-last > 2500) next(); }, ms);
+  setInterval(()=>{ if(vis && !document.hidden && Date.now()-last > 2500) next(); }, ms);
 }
 
 /* ============ CLASS CAROUSEL ============ */
@@ -202,7 +194,7 @@ function autoplay(el, btn, next, ms){
   car.querySelectorAll('.arrow').forEach(a=>a.addEventListener('click',()=>goTo(idx()+Number(a.dataset.dir))));
   track.addEventListener('scroll',()=>requestAnimationFrame(mark),{passive:true});
   mark();
-  autoplay(car, document.getElementById('classPause'), ()=>goTo(idx()+1), 2400);   // scrolls by itself, loops forever
+  autoplay(car, ()=>goTo(idx()+1), 2400);   // scrolls by itself, loops forever
 })();
 
 /* ============ GAMEPLAY CAROUSEL ============ */
@@ -218,7 +210,7 @@ function autoplay(el, btn, next, ms){
   document.querySelectorAll('#stage .arrow').forEach(a=>a.addEventListener('click',()=>goTo(idx()+Number(a.dataset.dir))));
   let t; shots.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(mark,80); },{passive:true});
   mark();
-  autoplay(document.getElementById('stage'), document.getElementById('stagePause'), ()=>goTo(idx()+1), 2800);   // scrolls by itself, loops forever
+  autoplay(document.getElementById('stage'), ()=>goTo(idx()+1), 2800);   // scrolls by itself, loops forever
 })();
 
 /* ============ HEADER / STICKY CTA / REVEAL ============ */
@@ -238,11 +230,10 @@ function autoplay(el, btn, next, ms){
 
 /* ============ SECTION VISIBILITY + PARALLAX ============
    Continuous image animations only run while their section is on screen (class "vis").
-   Parallax moves a CSS variable only; it is skipped with "reduce motion". */
+   Parallax moves a CSS variable only. */
 (function(){
   const io = new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('vis', e.isIntersecting)), {rootMargin:'80px 0px'});
   document.querySelectorAll('main > section').forEach(s=>io.observe(s));
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
   const items = [...document.querySelectorAll('[data-parallax]')]; if(!items.length) return;
   let ticking = false;
   const update = ()=>{ ticking = false; const vh = innerHeight; items.forEach(el=>{ const r = el.parentElement.getBoundingClientRect(); if(r.bottom < -100 || r.top > vh + 100) return; const p = ((r.top + r.height/2) - vh/2) / vh; el.style.setProperty('--p', Math.max(-1, Math.min(1, p)).toFixed(3)); }); };
@@ -266,9 +257,9 @@ function autoplay(el, btn, next, ms){
 
 /* ============ MOUSE INTERACTION ============
    Pointer position (-1..1) is written to --mx / --my on sections and cards; the CSS turns it into tilt,
-   parallax and zoom. Only for a real mouse, and skipped with "reduce motion". */
+   parallax and zoom. Only for a real mouse. */
 (function(){
-  if(!matchMedia('(hover:hover) and (pointer:fine)').matches || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
   const track = el=>{
     let raf = 0, last = null;
     el.addEventListener('pointermove', e=>{

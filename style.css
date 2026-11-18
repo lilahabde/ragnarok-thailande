@@ -217,10 +217,6 @@ footer p{margin:.3rem auto;max-width:80ch}
   .sticky{display:flex}
   .wide img{aspect-ratio:4/3}
 }
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .rv{opacity:1;transform:none}
-}
 
 /* ---- accessibility & stability additions ---- */
 html{scrollbar-gutter:stable}
@@ -236,7 +232,7 @@ main:focus{outline:none}
 .trust li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-inline-end:.65rem;vertical-align:middle}
 
 /* ---- image animations: transform / opacity / object-position only ----
-   Continuous ones run only while the section is on screen (.vis). All are disabled by "reduce motion". */
+   Continuous ones run only while the section is on screen (.vis). */
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.14)}}
 @keyframes kbshot{from{transform:scale(1)}to{transform:scale(1.07)}}
