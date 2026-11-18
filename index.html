@@ -36,10 +36,10 @@
 <main id="main" tabindex="-1">
 <!-- 01 HERO -->
 <section class="hero" id="hero" aria-labelledby="hero-title">
-  <video class="hero-video" id="heroVideo" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+  <video class="hero-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
   <div class="wrap hero-grid">
     <div>
-      <img class="hero-logo" src="logo.webp" alt="Ragnarok: The New World" width="520" height="282">
+      <img class="hero-logo" fetchpriority="high" decoding="async" src="logo.webp" alt="Ragnarok: The New World" width="520" height="282">
       <h1 id="hero-title"><span class="hl" data-i18n="h1">Midgard Is Calling You Back.</span></h1>
       <p class="sub" data-i18n="heroSub">The world you remember, rebuilt as a vast open world. Choose the class you loved, meet the new Druid and begin a new adventure today.</p>
       <a class="cta" href="https://store.steampowered.com/app/4212480/Ragnarok_The_New_World/" rel="noopener" data-cta="hero">
@@ -78,7 +78,7 @@
     </div>
     <div class="memory-right">
       <figure class="keyart rv">
-        <img data-parallax decoding="async" src="wall3.webp" alt="" width="1000" height="563">
+        <img data-parallax decoding="async" data-src="wall3.webp" alt="" width="1000" height="563">
       </figure>
       <p class="bridge rv" data-i18n="mBridge">The world you loved is back, and now it is wide open.</p>
     </div>

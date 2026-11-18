@@ -148,22 +148,26 @@ window.addEventListener('pageshow',()=>{ navigating = false; });
 
 /* ============ HERO VIDEO ============
    Muted loop built from the official artwork (poster = still image).
-   - not loaded at all when the visitor asked to save data
+   - not loaded at all on save-data or slow (2g/3g) connections: the poster image stays
+   - starts only after the page has loaded and the browser is idle
    - always plays by itself (no pause button)
    - paused automatically when scrolled out of view or when the tab is hidden */
 (function(){
   const v = document.getElementById('heroVideo'); if(!v) return;
-  const saveData = navigator.connection && navigator.connection.saveData;
-  if(saveData){ v.remove(); return; }
-  let visible = true;
+  const c = navigator.connection || {};
+  if(c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType || '')){ v.remove(); return; }   // slow link: poster image only
+  let visible = true, ready = false;
   v.muted = true;
   const portrait = matchMedia('(max-width:820px) and (orientation:portrait)').matches;
   v.poster = innerWidth <= 820 ? 'hero-bg-m.webp' : 'hero-bg.webp';
   const load = ()=>{ if(!v.getAttribute('src')) v.src = portrait ? 'hero-m.mp4' : 'hero.mp4'; };
-  const sync = ()=>{ if(visible && !document.hidden){ load(); const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else { v.pause(); } };
+  const sync = ()=>{ if(!ready) return; if(visible && !document.hidden){ load(); const p=v.play(); if(p&&p.catch) p.catch(()=>{}); } else { v.pause(); } };
   document.addEventListener('visibilitychange', sync);
   new IntersectionObserver(es=>es.forEach(e=>{ visible = e.isIntersecting; sync(); }),{threshold:.05}).observe(document.getElementById('hero'));
-  sync();
+  // the 2.5 MB video starts only once the page has painted and finished loading, so it never delays the first paint
+  const start = ()=>{ ready = true; sync(); };
+  const idle = ()=>{ if(window.requestIdleCallback) requestIdleCallback(start,{timeout:1500}); else setTimeout(start,300); };
+  if(document.readyState === 'complete') idle(); else addEventListener('load', idle, {once:true});
 })();
 
 /* ============ AUTOPLAY HELPER ============
