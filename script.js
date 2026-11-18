@@ -114,7 +114,6 @@ function applyLang(l){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T[l][el.dataset.i18n]; if(v!==undefined) el.innerHTML = v; });
   if(document.getElementById('world').classList.contains('ready')) setWorldImages(l);
   refreshLabels();
-  document.querySelectorAll('#classDots button').forEach((b,i)=>b.setAttribute('aria-label', T[l].slide+' '+(i+1)));
   const dimg = document.querySelector('.druid-frame img'); if(dimg) dimg.alt = T[l].c_dru;
   document.querySelectorAll('#shots img').forEach((im,i)=>{ im.alt = T[l].shotAlt+' '+(i+1); });
   const md = document.querySelector('meta[name=description]'); if(md) md.content = T[l].metaDesc;
@@ -178,22 +177,12 @@ function autoplay(el, next, ms){
   setInterval(()=>{ if(vis && !document.hidden && Date.now()-last > 2500) next(); }, ms);
 }
 
-/* ============ CLASS CAROUSEL ============ */
+/* ============ CLASS STRIP ============
+   Continuous automatic strip (CSS animation, only while on screen). No buttons.
+   Cards are duplicated once so the loop has no jump; the copies are hidden from assistive tech. */
 (function(){
-  const car = document.getElementById('classCar');
-  const track = car.querySelector('.track');
-  const slides = [...track.children];
-  slides.forEach((s,i)=>{ s.setAttribute('role','group'); s.setAttribute('aria-roledescription','slide'); s.setAttribute('aria-label',(i+1)+' / '+slides.length); });
-  const dots = document.getElementById('classDots');
-  slides.forEach((_,i)=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label', T[lang].slide+' '+(i+1)); b.addEventListener('click',()=>goTo(i)); dots.appendChild(b); });
-  const dl = [...dots.children];
-  function idx(){ const c = track.scrollLeft + track.clientWidth/2; let best=0,d=1e9; slides.forEach((s,i)=>{ const m=Math.abs(s.offsetLeft+s.offsetWidth/2-c); if(m<d){d=m;best=i;} }); return best; }
-  function mark(){ const i=idx(); dl.forEach((b,k)=>b.setAttribute('aria-current', String(k===i))); slides.forEach((s,k)=>s.classList.toggle('is-active', k===i)); }
-  function goTo(i){ const cur=idx(); i=(i+slides.length)%slides.length; const s=slides[i]; track.scrollTo({left:s.offsetLeft-(track.clientWidth-s.offsetWidth)/2,behavior:Math.abs(i-cur)>1?'auto':'smooth'}); }
-  car.querySelectorAll('.arrow').forEach(a=>a.addEventListener('click',()=>goTo(idx()+Number(a.dataset.dir))));
-  track.addEventListener('scroll',()=>requestAnimationFrame(mark),{passive:true});
-  mark();
-  autoplay(car, ()=>goTo(idx()+1), 2400);   // scrolls by itself, loops forever
+  const track = document.querySelector('#classCar .track');
+  [...track.children].forEach(s=>{ const k = s.cloneNode(true); k.setAttribute('aria-hidden','true'); track.appendChild(k); });
 })();
 
 /* ============ GAMEPLAY CAROUSEL ============ */
