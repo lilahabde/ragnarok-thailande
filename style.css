@@ -235,7 +235,6 @@ main:focus{outline:none}
    Continuous ones run only while the section is on screen (.vis). */
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.14)}}
-@keyframes kbshot{from{transform:scale(1)}to{transform:scale(1.07)}}
 @keyframes glow{50%{box-shadow:0 0 42px 6px rgba(255,223,101,.5)}}
 @keyframes glowbg{50%{background-size:118% 118%}}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
@@ -273,7 +272,6 @@ main:focus{outline:none}
 .vis .druid-frame img{animation:bob 2.8s ease-in-out infinite}
 
 /* gameplay: gentle zoom on every screenshot, thumbnails lift on hover */
-.vis .shots img{animation:kbshot 5s ease-in-out infinite alternate}
 .thumbs button:hover{transform:translateY(-3px);opacity:1}
 
 /* final logo */
@@ -316,7 +314,9 @@ h2{text-wrap:balance}
 .druid-frame:hover img{scale:1.05}
 .keyart:hover img,.wide:hover img{scale:1.05}
 .wide:hover .cap{translate:10px 0}
-.stage .shots img{translate:calc(var(--mx,0)*-10px) calc(var(--my,0)*-6px);scale:1.04;transition:translate .25s ease-out}
+/* no zoom or shift on the big slides: a scaled slide would show the edge of its neighbour */
+.stage .shots img{transition:filter .25s ease-out}
+.stage:hover .shots img{filter:brightness(1.08) saturate(1.08)}
 .memories li{transition:translate .25s,border-color .25s,background .25s}
 .memories li:hover{translate:10px 0;border-color:var(--gold)}
 .fact{transition:translate .25s}
