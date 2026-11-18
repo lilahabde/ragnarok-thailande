@@ -418,3 +418,5 @@ details p{text-align:center}
 /* ---- hero text block sits a little lower ---- */
 @media (min-width:821px) and (min-height:600px){ .hero{padding:132px 0 28px} }
 @media (max-width:820px) and (min-height:600px){ .hero{padding-top:108px} }
+/* short screens (laptops): the text block is lowered too, button stays on screen */
+@media (max-height:700px) and (min-height:481px){ .hero{padding:104px 0 40px} }
